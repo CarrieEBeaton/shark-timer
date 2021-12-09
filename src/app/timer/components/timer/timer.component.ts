@@ -9,10 +9,10 @@ import { TimerControlsComponent } from '../timer-controls/timer-controls.compone
   selector: 'app-timer',
   templateUrl: './timer.component.html',
   styleUrls: ['./timer.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TimerComponent implements OnInit, OnDestroy {
-  @ViewChild('timeDisplay') timeDisplay: TimeDisplayComponent;
+  @ViewChild('timeDisplay', {static: true}) timeDisplay: TimeDisplayComponent;
   @Input() controls: TimerControlsComponent;
   @Input() active: boolean;
 
@@ -30,6 +30,7 @@ export class TimerComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.interval$ = timer(0, 10);
 
+    console.log(this.controls);
     this.controls.timerReset$.subscribe(() => {
       this.resetTimer(this.startTime);
       this.controls.stop();
@@ -38,7 +39,9 @@ export class TimerComponent implements OnInit, OnDestroy {
 
     this.timeDisplay.settingTime$.pipe(
       filter(settingTime => settingTime),
-    ).subscribe(() => this.controls.stop());
+    ).subscribe(() => {
+      console.log(this.controls );
+      this.controls.stop()});
 
     this.controls.timerStart$.pipe(
       filter(start => start),
