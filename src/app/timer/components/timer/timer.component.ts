@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { TimerService } from '../../service/timer.service';
 import { getInterval, getTime, TimerState } from '../../store/selectors';
@@ -15,7 +15,7 @@ import { getTimer } from './../../store/actions';
   styleUrls: ['./timer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TimerComponent implements OnInit {
+export class TimerComponent implements OnInit, OnDestroy {
   @ViewChild('timeDisplay', {static: true}) timeDisplay: TimeDisplayComponent;
   @Input() controls: TimerControlsComponent;
   @Input() active: boolean;
@@ -26,22 +26,25 @@ export class TimerComponent implements OnInit {
 
   startTime: number = 5 + 1000 * 60 * 5;
 
-  constructor(private cd: ChangeDetectorRef, private timerService: TimerService, private store: Store<TimerState>) { }
+  subscriptionReset$: Subscription;
+  subscriptionSetTime$: Subscription;
+  subscriptionStart$: Subscription;
+
+  constructor(private timerService: TimerService, private store: Store<TimerState>) { }
 
   ngOnInit() {
     this.store.dispatch(getTimer(0, 10));
-    this.timerService.timerReset$.subscribe(() => {
+    this.subscriptionReset$ = this.timerService.timerReset$.subscribe(() => {
       this.resetTimer(this.startTime);
       this.controls.stop();
-      this.cd.markForCheck();
     });
 
-    this.timeDisplay.settingTime$.pipe(
+    this.subscriptionSetTime$ = this.timeDisplay.settingTime$.pipe(
       filter(settingTime => settingTime),
     ).subscribe(() => {
       this.controls.stop()});
 
-    this.timerService.timerStart$.pipe(
+    this.subscriptionStart$ = this.timerService.timerStart$.pipe(
       filter(start => start),
     ).subscribe(() => this.timeDisplay.endSetTime());
 
@@ -59,6 +62,12 @@ export class TimerComponent implements OnInit {
   setTime(startTime: number) {
     this.startTime = startTime;
     this.resetTimer(this.startTime);
+  }
+
+  ngOnDestroy() {
+    if(this.subscriptionReset$) {this.subscriptionReset$.unsubscribe();}
+    if(this.subscriptionSetTime$) {this.subscriptionSetTime$.unsubscribe();}
+    if(this.subscriptionStart$) {this.subscriptionStart$.unsubscribe();}
   }
 
 }
