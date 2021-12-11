@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Subject } from 'rxjs';
 import { TimerService } from '../../service/timer.service';
 import { getCount, TimerState } from '../../store/selectors';
 import { TimerControlsComponent } from '../timer-controls/timer-controls.component';
