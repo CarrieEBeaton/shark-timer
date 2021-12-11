@@ -1,6 +1,10 @@
 import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { retry } from 'rxjs/operators';
+import { TimerService } from '../../service/timer.service';
+import * as Actions from './../../store/actions';
+import * as fromReducer from './../../store/selectors';
 
 @Component({
   selector: 'app-timer-controls',
@@ -12,91 +16,57 @@ export class TimerControlsComponent implements OnInit {
   @ViewChild('alarm', {static: true}) alarmElementRef: ElementRef;
   @Input() timerActive: boolean;
 
-  timerStart$ = new BehaviorSubject<boolean>(false);
-  timerEnd$ = new BehaviorSubject<boolean>(false);
-  timerReset$ = new BehaviorSubject<number>(0);
-
-  stopwatchStart$ = new BehaviorSubject<boolean>(false);
-  stopwatchReset$ = new Subject<void>();
-
   alarm: HTMLAudioElement;
-  alarmEnabled$ = new BehaviorSubject<boolean>(true);
-  alarmSounding$ = new BehaviorSubject<boolean>(false);
 
-  fullScreen$ = new BehaviorSubject<boolean>(false);
-
-  constructor() { }
+  constructor(private timerService: TimerService) { }
 
   ngOnInit() {
     this.alarm = this.alarmElementRef.nativeElement;
   }
 
   startStop() {
-    if (this.timerActive) {
-      if (!this.timerEnd$.value) {
-        this.timerStart$.next(!this.timerStart$.value);
-      } else {
-        this.stopAlarm();
-      }
-    } else {
-      this.stopwatchStart$.next(!this.stopwatchStart$.value);
-    }
+    this.timerService.startStop(this.timerActive);
   }
 
   start() {
-    if (this.timerActive) {
-      this.timerStart$.next(true);
-    } else {
-      this.stopwatchStart$.next(true);
-    }
+    this.timerService.start(this.timerActive);
   }
 
   stop() {
-    if (this.timerActive) {
-      this.timerStart$.next(false);
-    } else {
-      this.stopwatchStart$.next(false);
-    }
+    this.timerService.stop(this.timerActive);
   }
 
   reset() {
-    if (this.timerActive) {
-      this.timerReset$.next(0);
-    } else {
-      this.stopwatchReset$.next();
-    }
+    this.timerService.reset(this.timerActive);
   }
 
   end(timerComplete: boolean) {
-    this.timerEnd$.next(timerComplete);
-    if (timerComplete) {
-      this.startAlarm();
-    }
+    this.timerService.end(timerComplete);
   }
 
   toggleAlarm() {
-    this.alarmEnabled$.next(!this.alarmEnabled$.value);
+    this.timerService.toggleAlarm();
   }
 
   startAlarm() {
-    if (this.alarmEnabled$.value && !this.alarmSounding$.value) {
-      this.alarmSounding$.next(true);
+    if (this.timerService.alarmEnabled$.value && !this.timerService.alarmSounding$.value) {
+      this.timerService.startAlarm();
       this.alarm.play();
     }
   }
 
   stopAlarm() {
-    if (this.alarmEnabled$.value && this.alarmSounding$.value) {
-      this.alarmSounding$.next(false);
+    if (this.timerService.alarmEnabled$.value && this.timerService.alarmSounding$.value) {
+      this.timerService.stopAlarm();
       this.alarm.pause();
     }
   }
 
   toggleFullscreen() {
-    this.fullScreen$.next(!this.fullScreen$.value);
+    this.timerService.toggleFullscreen();
   }
 
   get started() {
-    return this.timerActive ? this.timerStart$.value : this.stopwatchStart$.value;
+    return this.timerActive ? this.timerService.timerStart$.value : this.timerService.stopwatchStart$.value;
   }
 }

@@ -8,6 +8,11 @@ import { MaterialModule } from '../material/material.module';
 import { FormsModule } from '@angular/forms';
 import { TimerRoutingModule } from './timer-routing.module';
 import { CommonModule } from '@angular/common';
+import { StoreModule } from '@ngrx/store';
+import * as fromTimer from './store/reducers';
+import { TimerService } from './service/timer.service';
+import { EffectsModule } from '@ngrx/effects';
+import { TimerEffects } from './store/effects';
 
 @NgModule({
     declarations: [
@@ -21,7 +26,10 @@ import { CommonModule } from '@angular/common';
         CommonModule,
         MaterialModule,
         FormsModule,
-        TimerRoutingModule
-    ]
+        TimerRoutingModule,
+        StoreModule.forFeature(fromTimer.timerFeatureKey, fromTimer.timerReducer),
+        EffectsModule.forFeature([TimerEffects])
+    ],
+    providers: [TimerService]
 })
 export class TimerModule { }

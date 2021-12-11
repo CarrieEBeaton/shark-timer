@@ -1,9 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { BehaviorSubject, EMPTY, Observable, Subject, timer } from 'rxjs';
 import { filter, map, mapTo, scan, startWith, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
+import { TimerService } from '../../service/timer.service';
+import { getTime, TimerState } from '../../store/selectors';
 
 import { TimeDisplayComponent } from '../time-display/time-display.component';
 import { TimerControlsComponent } from '../timer-controls/timer-controls.component';
+import * as Actions from './../../store/actions';
 
 @Component({
   selector: 'app-timer',
@@ -11,27 +15,22 @@ import { TimerControlsComponent } from '../timer-controls/timer-controls.compone
   styleUrls: ['./timer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TimerComponent implements OnInit, OnDestroy {
+export class TimerComponent implements OnInit {
   @ViewChild('timeDisplay', {static: true}) timeDisplay: TimeDisplayComponent;
   @Input() controls: TimerControlsComponent;
   @Input() active: boolean;
 
-  time$: Observable<number>;
+  time$ = this.store.select(getTime);
   percent$: Observable<number>;
   start$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  interval$: Observable<number>;
-  reset$: Subject<void> = new Subject<void>();
-  destroyed$: Subject<void> = new Subject<void>();
 
   startTime: number = 5 + 1000 * 60 * 5;
 
-  constructor(private cd: ChangeDetectorRef) { }
+  constructor(private cd: ChangeDetectorRef, private timerService: TimerService, private store: Store<TimerState>) { }
 
   ngOnInit() {
-    this.interval$ = timer(0, 10);
-
-    console.log(this.controls);
-    this.controls.timerReset$.subscribe(() => {
+    this.timerService.setInterval(0, 10);
+    this.timerService.timerReset$.subscribe(() => {
       this.resetTimer(this.startTime);
       this.controls.stop();
       this.cd.markForCheck();
@@ -43,35 +42,16 @@ export class TimerComponent implements OnInit, OnDestroy {
       console.log(this.controls );
       this.controls.stop()});
 
-    this.controls.timerStart$.pipe(
+    this.timerService.timerStart$.pipe(
       filter(start => start),
     ).subscribe(() => this.timeDisplay.endSetTime());
 
   }
 
-  ngOnDestroy() {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
-
   resetTimer(startTime: number) {
-    this.reset$.next();
+    this.timerService.reset$.next();
     this.controls.end(false);
-
-    this.time$ = this.controls.timerStart$.pipe(
-      filter(() => this.active),
-      switchMap(start => (start ? this.interval$.pipe(mapTo(10)) : EMPTY)),
-      scan((acc, val) => acc - val, startTime),
-      startWith(startTime),
-      tap(val => {
-        if (val === 0) {
-          this.controls.end(true);
-        }
-      }),
-      takeUntil(this.reset$),
-      takeWhile(val => val >= 0),
-    );
-
+    this.store.dispatch(Actions.getTime(this.active, this.startTime));
     this.percent$ = this.time$.pipe(
       map(time => (1 - time / startTime) * 100),
     );

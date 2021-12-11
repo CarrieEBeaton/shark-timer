@@ -9,7 +9,8 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppEffects } from './app.effects';
-import { metaReducers, reducers } from './reducers';
+import { reducers } from './reducers';
+// import { metaReducers, reducers } from './reducers';
 
 @NgModule({
     declarations: [
@@ -19,7 +20,7 @@ import { metaReducers, reducers } from './reducers';
         BrowserModule,
         AppRoutingModule,
         BrowserAnimationsModule,
-        StoreModule.forRoot(reducers, { metaReducers }),
+        StoreModule.forRoot({}),
         EffectsModule.forRoot([AppEffects]),
         StoreDevtoolsModule.instrument({
             maxAge: 25,
