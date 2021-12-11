@@ -46,7 +46,10 @@ export class TimerEffects {
     stopWatchReset$ = createEffect(
         () => this.actions$.pipe(
           ofType(TimeActionTypes.resetStopWatch),
-          tap(() => this.timerService.stopWatchReset())
+          tap(() => {
+              this.timerService.stop();
+              this.timerService.stopWatchReset();
+            })
         ),
         { dispatch: false }
       );

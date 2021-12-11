@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { BehaviorSubject, EMPTY, Observable, Subject, timer } from "rxjs";
+import { BehaviorSubject, EMPTY, Subject, timer } from "rxjs";
 import { filter, mapTo, scan, startWith, switchMap, takeUntil, takeWhile, tap } from "rxjs/operators";
 import { getInterval, TimerState } from "../store/selectors";
+import * as Actions from './../store/actions';
 
 @Injectable()
 export class TimerService {
@@ -62,6 +63,7 @@ export class TimerService {
             this.timerReset$.next(0);
         } else {
             this.stopwatchReset$.next();
+            this.store.dispatch(Actions.resetStopWatch());
         }
     }
 
