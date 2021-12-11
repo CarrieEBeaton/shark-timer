@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'timer',
+    path: '',
     loadChildren: () => import('./timer/timer.module').then(m => m.TimerModule)
   },
   { path: '', redirectTo: '/timer', pathMatch: 'full' }
