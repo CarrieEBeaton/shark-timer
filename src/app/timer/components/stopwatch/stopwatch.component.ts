@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import { TimerService } from '../../service/timer.service';
 import { getCount, TimerState } from '../../store/selectors';
 import { TimerControlsComponent } from '../timer-controls/timer-controls.component';
@@ -12,10 +13,12 @@ import { getTimer } from './../../store/actions';
   styleUrls: ['./stopwatch.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StopwatchComponent implements OnInit {
+export class StopwatchComponent implements OnInit, OnDestroy {
   @Input() controls: TimerControlsComponent;
 
   time$ = this.store.select(getCount);
+
+  subscription$: Subscription;
 
   constructor(private cd: ChangeDetectorRef, private timerService: TimerService, private store: Store<TimerState>) { }
 
@@ -23,7 +26,7 @@ export class StopwatchComponent implements OnInit {
     this.store.dispatch(getTimer(0, 10));
     this.resetTimer();
 
-    this.timerService.stopwatchReset$.subscribe(() => {
+    this.subscription$ = this.timerService.stopwatchReset$.subscribe(() => {
       this.resetTimer();
       this.timerService.stop();
       this.cd.markForCheck();
@@ -31,7 +34,10 @@ export class StopwatchComponent implements OnInit {
   }
 
   resetTimer() {
-    this.timerService.stopWatchReset();
     this.store.dispatch(Actions.resetStopWatch());
+  }
+
+  ngOnDestroy() {
+    if (this.subscription$) {this.subscription$.unsubscribe();}
   }
 }

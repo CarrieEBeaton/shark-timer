@@ -39,7 +39,6 @@ export class TimerComponent implements OnInit {
     this.timeDisplay.settingTime$.pipe(
       filter(settingTime => settingTime),
     ).subscribe(() => {
-      console.log(this.controls );
       this.controls.stop()});
 
     this.timerService.timerStart$.pipe(
