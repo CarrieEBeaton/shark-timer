@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
+import { Store } from "@ngrx/store";
 import { BehaviorSubject, EMPTY, Observable, Subject, timer } from "rxjs";
 import { filter, mapTo, scan, startWith, switchMap, takeUntil, takeWhile, tap } from "rxjs/operators";
+import { getInterval, TimerState } from "../store/selectors";
 
 @Injectable()
 export class TimerService {
-
-    interval$: Observable<number>;
 
     timerStart$ = new BehaviorSubject<boolean>(false);
     timerEnd$ = new BehaviorSubject<boolean>(false);
@@ -21,11 +21,12 @@ export class TimerService {
     fullScreen$ = new BehaviorSubject<boolean>(false);
     reset$: Subject<void> = new Subject<void>();
 
-    constructor(
+    interval$ = this.store.select(getInterval);
+    constructor(private store: Store<TimerState>
     ) { }
 
     setInterval(dueTimer: number, periodScheduler: number) {
-        this.interval$ = timer(dueTimer, periodScheduler);
+        return timer(dueTimer, periodScheduler);
     }
 
     timerStart() {

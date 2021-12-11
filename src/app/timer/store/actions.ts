@@ -6,6 +6,8 @@ export enum TimeActionTypes {
     getStopWatch = '[StopWatch] Get Time',
     setStopWatch = '[StopWatch] Set Time',
     resetStopWatch = '[StopWatch] Reset Time',
+    getTimer = '[Timer] Get Timer',
+    setInterval = '[Interval] Set Interval',
 }
 
 export const getTime = createAction(
@@ -29,4 +31,14 @@ export const setStopWatch = createAction(
 
 export const resetStopWatch = createAction(
     TimeActionTypes.resetStopWatch
+);
+
+export const getTimer = createAction(
+    TimeActionTypes.getTimer,
+    (dueTimer: number, periodScheduler: number) => ({dueTimer, periodScheduler})
+);
+
+export const setInterval = createAction(
+    TimeActionTypes.setInterval,
+    (interval: number) => ({interval})
 );

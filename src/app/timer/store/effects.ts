@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY } from 'rxjs';
 import { map, mergeMap, catchError } from 'rxjs/operators';
 import { TimerService } from '../service/timer.service';
-import { TimeActionTypes, setTime, setStopWatch } from './../store/actions';
+import { TimeActionTypes, setTime, setStopWatch, setInterval } from './../store/actions';
 
 @Injectable()
 export class TimerEffects {
@@ -32,5 +32,16 @@ export class TimerEffects {
             )
         })
     ));
+
+    getInterval$ = createEffect(() => this.actions$.pipe(
+        ofType(TimeActionTypes.getTimer),
+        mergeMap((props) => {
+            return this.timerService.setInterval(props['dueTimer'], props['periodScheduler']).pipe(
+                map(interval => setInterval(interval)),
+                catchError(() => EMPTY)
+            )
+        })
+    ));
+
 
 }

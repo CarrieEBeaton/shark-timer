@@ -4,6 +4,7 @@ import { TimerService } from '../../service/timer.service';
 import { getCount, TimerState } from '../../store/selectors';
 import { TimerControlsComponent } from '../timer-controls/timer-controls.component';
 import * as Actions from './../../store/actions';
+import { getTimer } from './../../store/actions';
 
 @Component({
   selector: 'app-stopwatch',
@@ -19,7 +20,7 @@ export class StopwatchComponent implements OnInit {
   constructor(private cd: ChangeDetectorRef, private timerService: TimerService, private store: Store<TimerState>) { }
 
   ngOnInit() {
-    this.timerService.setInterval(0, 10);
+    this.store.dispatch(getTimer(0, 10));
     this.resetTimer();
 
     this.timerService.stopwatchReset$.subscribe(() => {

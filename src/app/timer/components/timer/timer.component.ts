@@ -3,10 +3,11 @@ import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { TimerService } from '../../service/timer.service';
-import { getTime, TimerState } from '../../store/selectors';
+import { getInterval, getTime, TimerState } from '../../store/selectors';
 import { TimeDisplayComponent } from '../time-display/time-display.component';
 import { TimerControlsComponent } from '../timer-controls/timer-controls.component';
 import * as Actions from './../../store/actions';
+import { getTimer } from './../../store/actions';
 
 @Component({
   selector: 'app-timer',
@@ -28,7 +29,7 @@ export class TimerComponent implements OnInit {
   constructor(private cd: ChangeDetectorRef, private timerService: TimerService, private store: Store<TimerState>) { }
 
   ngOnInit() {
-    this.timerService.setInterval(0, 10);
+    this.store.dispatch(getTimer(0, 10));
     this.timerService.timerReset$.subscribe(() => {
       this.resetTimer(this.startTime);
       this.controls.stop();
