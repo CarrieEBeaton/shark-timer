@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { retry } from 'rxjs/operators';
 import { TimerService } from '../../service/timer.service';
 import * as Actions from './../../store/actions';
-import * as fromReducer from './../../store/selectors';
+import { TimerState } from './../../store/selectors';
 
 @Component({
   selector: 'app-timer-controls',
@@ -13,19 +11,27 @@ import * as fromReducer from './../../store/selectors';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimerControlsComponent implements OnInit {
-  @ViewChild('alarm', {static: true}) alarmElementRef: ElementRef;
+  @ViewChild('alarm', { static: true }) alarmElementRef: ElementRef;
   @Input() timerActive: boolean;
 
   alarm: HTMLAudioElement;
-
-  constructor(private timerService: TimerService) { }
+  constructor(private timerService: TimerService, private store: Store<TimerState>) { }
 
   ngOnInit() {
     this.alarm = this.alarmElementRef.nativeElement;
   }
 
   startStop() {
-    this.timerService.startStop(this.timerActive);
+    if (this.timerActive) {
+      if (!this.timerService.timerEnd$.value) {
+        this.timerService.timerStart();
+      } else {
+        this.stopAlarm();
+      }
+    } else {
+      this.timerService.stopWatchStart();
+      this.store.dispatch(Actions.getStopWatch());
+    }
   }
 
   start() {

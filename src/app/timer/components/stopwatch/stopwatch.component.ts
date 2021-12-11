@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { EMPTY, Observable, Subject } from 'rxjs';
-import { filter, mapTo, scan, switchMap, takeUntil } from 'rxjs/operators';
-import { TimerState } from '../../store/selectors';
+import { Subject } from 'rxjs';
 import { TimerService } from '../../service/timer.service';
+import { getCount, TimerState } from '../../store/selectors';
 import { TimerControlsComponent } from '../timer-controls/timer-controls.component';
+import * as Actions from './../../store/actions';
 
 @Component({
   selector: 'app-stopwatch',
@@ -12,14 +12,10 @@ import { TimerControlsComponent } from '../timer-controls/timer-controls.compone
   styleUrls: ['./stopwatch.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StopwatchComponent implements OnInit, OnDestroy {
+export class StopwatchComponent implements OnInit {
   @Input() controls: TimerControlsComponent;
-  @Input() active: boolean;
 
-  count$: Observable<number>;
-
-  reset$: Subject<void> = new Subject<void>();
-  destroyed$: Subject<void> = new Subject<void>();
+  time$ = this.store.select(getCount);
 
   constructor(private cd: ChangeDetectorRef, private timerService: TimerService, private store: Store<TimerState>) { }
 
@@ -34,21 +30,8 @@ export class StopwatchComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
-
   resetTimer() {
-    this.reset$.next();
-    this.count$ = this.timerService.stopwatchStart$.pipe(
-      filter(() => this.active),
-      switchMap(start => {
-        return (start ? this.timerService.interval$.pipe(mapTo(10)) : EMPTY)
-      }),
-      scan((acc, val) => acc + val, 0),
-      takeUntil(this.reset$)
-    );
+    this.timerService.stopWatchReset();
+    this.store.dispatch(Actions.resetStopWatch());
   }
-
 }

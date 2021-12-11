@@ -89,7 +89,6 @@ export class TimeDisplayComponent implements OnInit {
     return this.digitOne(this.cSeconds);
   }
 
-
   private digitTwo(val: number) {
     return Math.floor((val / 10) % 10);
   }

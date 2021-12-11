@@ -13,6 +13,7 @@ export class TimerService {
 
     stopwatchStart$ = new BehaviorSubject<boolean>(false);
     stopwatchReset$ = new Subject<void>();
+    stopReset$ = new Subject<void>();
 
     alarmEnabled$ = new BehaviorSubject<boolean>(true);
     alarmSounding$ = new BehaviorSubject<boolean>(false);
@@ -27,19 +28,17 @@ export class TimerService {
         this.interval$ = timer(dueTimer, periodScheduler);
     }
 
-    startStop(timerActive) {
-        if (timerActive) {
-            console.log(!this.timerEnd$.value);
-            if (!this.timerEnd$.value) {
-                this.timerStart$.next(!this.timerStart$.value);
-            } else {
-                this.stopAlarm();
-            }
-        } else {
-            this.stopwatchStart$.next(!this.stopwatchStart$.value);
-        }
+    timerStart() {
+        this.timerStart$.next(!this.timerStart$.value);
     }
 
+    stopWatchStart() {
+        this.stopwatchStart$.next(!this.stopwatchStart$.value);
+    }
+
+    stopWatchReset() {
+        this.stopReset$.next();
+    }
 
     start(timerActive: boolean) {
         if (timerActive) {
@@ -102,5 +101,15 @@ export class TimerService {
             takeUntil(this.reset$),
             takeWhile(val => val >= 0),
         );
+    }
+
+    setStopWatch() {
+        return this.stopwatchStart$.pipe(
+            switchMap(start => {
+              return (start ? this.interval$.pipe(mapTo(10)) : EMPTY)
+            }),
+            scan((acc, val) => acc + val, 0),
+            takeUntil(this.stopReset$)
+          );
     }
 }

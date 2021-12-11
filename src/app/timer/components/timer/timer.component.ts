@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, EMPTY, Observable, Subject, timer } from 'rxjs';
-import { filter, map, mapTo, scan, startWith, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { TimerService } from '../../service/timer.service';
 import { getTime, TimerState } from '../../store/selectors';
-
 import { TimeDisplayComponent } from '../time-display/time-display.component';
 import { TimerControlsComponent } from '../timer-controls/timer-controls.component';
 import * as Actions from './../../store/actions';
