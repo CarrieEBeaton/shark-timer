@@ -1,6 +1,6 @@
-import {  getInterval, TimerState } from "./selectors";
-import * as fromReducers from './reducers';
 import { getStopWatch, getTime, getTimer, resetStopWatch } from "./actions";
+import * as fromReducers from './reducers';
+import { TimerState } from "./selectors";
 
 describe('Timer Reducer', () => {
  
