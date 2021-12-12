@@ -40,4 +40,12 @@ describe('TimerControlsComponent', () => {
         fixture.detectChanges();
         expect(reset).toHaveBeenCalled();
     });
+
+    it('should click startStop', () => {
+        let startStop = spyOn(component, 'startStop');
+        let startButton = debugElement.query(By.css('.start-button')).nativeElement;
+        startButton.click();
+        fixture.detectChanges();
+        expect(startStop).toHaveBeenCalled();
+    });
 });

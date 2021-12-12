@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MaterialModule } from '../../../material/material.module';
 import { TimeDisplayComponent } from './time-display.component';
@@ -14,7 +15,7 @@ describe('TimeDisplayComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [TimeDisplayComponent],
-            imports: [MaterialModule, FormsModule],
+            imports: [MaterialModule, FormsModule, BrowserAnimationsModule],
         }).compileComponents();
     }));
 
@@ -36,4 +37,15 @@ describe('TimeDisplayComponent', () => {
         fixture.detectChanges();
         expect(setStart).toHaveBeenCalled();
     });
+
+    it('should call endSetTime when clicked', () => {
+        component.settingTime$.next(true);
+        fixture.detectChanges();
+        let endSetTime = spyOn(component, 'endSetTime');
+        let endSetTimer = debugElement.query(By.css('#done')).nativeElement;
+        endSetTimer.click();
+        fixture.detectChanges();
+        expect(endSetTime).toHaveBeenCalled();
+    });
+
 });
