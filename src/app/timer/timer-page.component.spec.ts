@@ -1,9 +1,8 @@
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-
 import { MaterialModule } from '../material/material.module';
 import { StopwatchComponent } from './components/stopwatch/stopwatch.component';
 import { TimeDisplayComponent } from './components/time-display/time-display.component';
@@ -49,4 +48,11 @@ describe('TimerPageComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+    
+    it('should selectedTabIndex when tabGroup is called', () => {
+        const selectedTab = spyOn(component.selectedTabIndex$, 'next');
+        component.tabChange(0);
+        expect(selectedTab).toHaveBeenCalledWith(0);
+    });
+
 });

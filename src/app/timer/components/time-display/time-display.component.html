@@ -1,4 +1,4 @@
-<div (click)="startSetTime()"
+<div id="startSetTime" (click)="startSetTime()"
      *ngIf="!(settingTime$ | async)">
   <ng-container *ngIf="hoursDigitTwo || hoursDigitOne">
     <span class="act-hide time-display-digit"
