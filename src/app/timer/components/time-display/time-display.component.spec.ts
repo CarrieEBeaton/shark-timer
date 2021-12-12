@@ -3,8 +3,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideMockStore } from '@ngrx/store/testing';
 
 import { MaterialModule } from '../../../material/material.module';
+import { TimerService } from '../../service/timer.service';
 import { TimeDisplayComponent } from './time-display.component';
 
 describe('TimeDisplayComponent', () => {
@@ -16,6 +18,7 @@ describe('TimeDisplayComponent', () => {
         TestBed.configureTestingModule({
             declarations: [TimeDisplayComponent],
             imports: [MaterialModule, FormsModule, BrowserAnimationsModule],
+            providers: [TimerService, provideMockStore()]
         }).compileComponents();
     }));
 

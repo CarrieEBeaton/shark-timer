@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { TimerService } from '../../service/timer.service';
 import { getTime, TimerState } from '../../store/selectors';
-import { TimeDisplayComponent } from '../time-display/time-display.component';
 import * as Actions from './../../store/actions';
 import { getTimer } from './../../store/actions';
 
@@ -15,7 +14,6 @@ import { getTimer } from './../../store/actions';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TimerComponent implements OnInit, OnDestroy {
-  @ViewChild('timeDisplay', {static: true}) timeDisplay: TimeDisplayComponent;
   @Input() active: boolean;
 
   time$ = this.store.select(getTime);
@@ -25,8 +23,6 @@ export class TimerComponent implements OnInit, OnDestroy {
   startTime: number = 5 + 1000 * 60 * 5;
 
   subscriptionReset$: Subscription;
-  subscriptionSetTime$: Subscription;
-  subscriptionStart$: Subscription;
 
   constructor(private timerService: TimerService, private store: Store<TimerState>) { }
 
@@ -36,17 +32,6 @@ export class TimerComponent implements OnInit, OnDestroy {
       this.resetTimer(this.startTime);
       this.timerService.stop();
     });
-
-    this.subscriptionSetTime$ = this.timeDisplay.settingTime$.pipe(
-      filter(settingTime => settingTime),
-    ).subscribe(() => {
-      this.timerService.stop();
-    });
-
-    this.subscriptionStart$ = this.timerService.timerStart$.pipe(
-      filter(start => start),
-    ).subscribe(() => this.timeDisplay.endSetTime());
-
   }
 
   resetTimer(startTime: number) {
@@ -65,8 +50,6 @@ export class TimerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if(this.subscriptionReset$) {this.subscriptionReset$.unsubscribe();}
-    if(this.subscriptionSetTime$) {this.subscriptionSetTime$.unsubscribe();}
-    if(this.subscriptionStart$) {this.subscriptionStart$.unsubscribe();}
   }
 
 }

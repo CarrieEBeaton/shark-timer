@@ -12,13 +12,11 @@ import { getTime } from '../../store/selectors';
 describe('TimerComponent', () => {
     let component: TimerComponent;
     let fixture: ComponentFixture<TimerComponent>;
-    let controls: TimerControlsComponent;
-    let controlsFixture: ComponentFixture<TimerControlsComponent>
     let store: MockStore;
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            declarations: [TimerComponent, TimeDisplayComponent, TimerControlsComponent],
+            declarations: [TimerComponent, TimeDisplayComponent],
             imports: [MaterialModule, FormsModule],
             providers: [TimerService, provideMockStore()]
         }).compileComponents();
@@ -26,11 +24,8 @@ describe('TimerComponent', () => {
 
     beforeEach(() => {
         fixture = TestBed.createComponent(TimerComponent);
-        controlsFixture = TestBed.createComponent(TimerControlsComponent);
         store = TestBed.inject(MockStore);
         component = fixture.componentInstance;
-        controls = controlsFixture.componentInstance;
-        component.controls = controls;
         store.overrideSelector(getTime, 0);
         fixture.detectChanges();
     });

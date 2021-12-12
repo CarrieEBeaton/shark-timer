@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { TimerService } from '../../service/timer.service';
 
 @Component({
   selector: 'app-time-display',
@@ -7,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./time-display.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TimeDisplayComponent {
+export class TimeDisplayComponent implements OnInit, OnDestroy {
   private hourInMs = 3600000;
   private minuteInMs = 60000;
   private secondInMs = 1000;
@@ -22,6 +24,25 @@ export class TimeDisplayComponent {
   inputHours: number;
   inputMinutes: number;
   inputSeconds: number;
+
+  subscriptionSetTime$: Subscription;
+  subscriptionStart$: Subscription;
+
+  constructor(private timerService: TimerService) {
+  }
+
+  ngOnInit() {
+    this.subscriptionSetTime$ = this.settingTime$.pipe(
+      filter(settingTime => settingTime),
+    ).subscribe(() => {
+      this.timerService.stop();
+    });
+    
+    this.timerService.timerStart$.pipe(
+      filter(start => start),
+    ).subscribe(() => this.endSetTime());
+
+  }
 
   inputChange(hours: number, minutes: number, seconds: number) {
     const timeVal = hours * this.hourInMs + minutes * this.minuteInMs + seconds * this.secondInMs;
@@ -90,5 +111,11 @@ export class TimeDisplayComponent {
   private digitOne(val: number) {
     return val % 10;
   }
+
+  ngOnDestroy() {
+   if(this.subscriptionSetTime$) {this.subscriptionSetTime$.unsubscribe();}
+   if(this.subscriptionStart$) {this.subscriptionStart$.unsubscribe();}
+  }
+
 
 }
