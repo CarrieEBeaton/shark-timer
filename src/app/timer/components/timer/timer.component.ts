@@ -17,7 +17,6 @@ import { getTimer } from './../../store/actions';
 })
 export class TimerComponent implements OnInit, OnDestroy {
   @ViewChild('timeDisplay', {static: true}) timeDisplay: TimeDisplayComponent;
-  @Input() controls: TimerControlsComponent;
   @Input() active: boolean;
 
   time$ = this.store.select(getTime);
@@ -36,13 +35,14 @@ export class TimerComponent implements OnInit, OnDestroy {
     this.store.dispatch(getTimer(0, 10));
     this.subscriptionReset$ = this.timerService.timerReset$.subscribe(() => {
       this.resetTimer(this.startTime);
-      this.controls.stop();
+      this.timerService.stop();
     });
 
     this.subscriptionSetTime$ = this.timeDisplay.settingTime$.pipe(
       filter(settingTime => settingTime),
     ).subscribe(() => {
-      this.controls.stop()});
+      this.timerService.stop();
+    });
 
     this.subscriptionStart$ = this.timerService.timerStart$.pipe(
       filter(start => start),
@@ -52,7 +52,7 @@ export class TimerComponent implements OnInit, OnDestroy {
 
   resetTimer(startTime: number) {
     this.timerService.reset$.next();
-    this.controls.end(false);
+    this.timerService.end(false);
     this.store.dispatch(Actions.getTime(this.active, this.startTime));
     this.percent$ = this.time$.pipe(
       map(time => (1 - time / startTime) * 100),

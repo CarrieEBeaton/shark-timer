@@ -12,7 +12,6 @@ import { getTimer } from './../../store/actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StopwatchComponent implements OnInit {
-  @Input() controls: TimerControlsComponent;
 
   time$ = this.store.select(getCount);
 

@@ -34,20 +34,8 @@ export class TimerControlsComponent implements OnInit {
     }
   }
 
-  start() {
-    this.timerService.start(this.timerActive);
-  }
-
-  stop() {
-    this.timerService.stop(this.timerActive);
-  }
-
   reset() {
     this.timerService.reset(this.timerActive);
-  }
-
-  end(timerComplete: boolean) {
-    this.timerService.end(timerComplete);
   }
 
   toggleAlarm() {
