@@ -18,7 +18,6 @@ export class TimerComponent implements OnInit, OnDestroy {
 
   time$ = this.store.select(getTime);
   percent$: Observable<number>;
-  start$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   startTime: number = 5 + 1000 * 60 * 5;
 
