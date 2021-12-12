@@ -4,7 +4,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
     selector: 'app-time-display',
     template: ''
 })
-export class TimeDisplayComponentStub {
+export class TimeDisplayStubComponent {
     @Input() time: number;
     @Input() showHundriths: boolean;
     @Input() canSetTime: boolean;
@@ -16,7 +16,7 @@ export class TimeDisplayComponentStub {
     selector: 'app-timer-controls',
     template: ''
 })
-export class TimerControlsComponentStub {
+export class TimerControlsStubComponent {
     @Input() timerActive: boolean;
 }
 

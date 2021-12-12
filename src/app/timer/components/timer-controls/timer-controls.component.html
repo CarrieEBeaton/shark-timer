@@ -2,10 +2,10 @@
         class="start-button"
         (click)="startStop()">
 
-  <span *ngIf="timerActive && !(this.timerService.timerEnd$ | async) && !(this.timerService.timerStart$ | async)">Start</span>
-  <span *ngIf="timerActive && !(this.timerService.timerEnd$ | async) && (this.timerService.timerStart$ | async)">Stop</span>
+  <span *ngIf="timerActive && (this.timerService.timerEnd$ | async) === false && (this.timerService.timerStart$ | async) === false">Start</span>
+  <span *ngIf="timerActive && (this.timerService.timerEnd$ | async) === false && (this.timerService.timerStart$ | async)">Stop</span>
   <span *ngIf="timerActive && (this.timerService.timerEnd$ | async)">Ok</span>
-  <span *ngIf="!timerActive && !(this.timerService.stopwatchStart$ | async)">Start</span>
+  <span *ngIf="!timerActive && (this.timerService.stopwatchStart$ | async) === false">Start</span>
   <span *ngIf="!timerActive && (this.timerService.stopwatchStart$ | async)">Stop</span>
 </button>
 <button mat-button
@@ -16,11 +16,11 @@
         *ngIf="timerActive"
         (click)="toggleAlarm()">
   <mat-icon *ngIf="(this.timerService.alarmEnabled$ | async)">volume_up</mat-icon>
-  <mat-icon *ngIf="!(this.timerService.alarmEnabled$ | async)">volume_off</mat-icon>
+  <mat-icon *ngIf="(this.timerService.alarmEnabled$ | async) === false">volume_off</mat-icon>
 </button>
 <button mat-icon-button
         (click)="toggleFullscreen()">
-  <mat-icon *ngIf="!(this.timerService.fullScreen$ | async)">fullscreen</mat-icon>
+  <mat-icon *ngIf="(this.timerService.fullScreen$ | async) === false">fullscreen</mat-icon>
   <mat-icon *ngIf="(this.timerService.fullScreen$ | async)">fullscreen_exit</mat-icon>
 </button>
 

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./time-display.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TimeDisplayComponent implements OnInit {
+export class TimeDisplayComponent {
   private hourInMs = 3600000;
   private minuteInMs = 60000;
   private secondInMs = 1000;
@@ -22,11 +22,6 @@ export class TimeDisplayComponent implements OnInit {
   inputHours: number;
   inputMinutes: number;
   inputSeconds: number;
-
-  constructor() { }
-
-  ngOnInit() {
-  }
 
   inputChange(hours: number, minutes: number, seconds: number) {
     const timeVal = hours * this.hourInMs + minutes * this.minuteInMs + seconds * this.secondInMs;

@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { MaterialModule } from '../../../material/material.module';
 import { getCount } from '../../store/selectors';
-import { TimeDisplayComponentStub, TimerControlsComponentStub } from '../../testing/stubs';
+import { TimeDisplayStubComponent, TimerControlsStubComponent } from '../../testing/stubs';
 import { TimerControlsComponent } from '../timer-controls/timer-controls.component';
 import { StopwatchComponent } from './stopwatch.component';
 
@@ -16,8 +16,8 @@ describe('StopwatchComponent', () => {
         TestBed.configureTestingModule({
             declarations: [
                 StopwatchComponent, 
-                TimeDisplayComponentStub, 
-                TimerControlsComponentStub],
+                TimeDisplayStubComponent, 
+                TimerControlsStubComponent],
             imports: [MaterialModule, FormsModule],
             providers: [provideMockStore()]
         }).compileComponents();
