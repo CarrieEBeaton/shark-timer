@@ -38,7 +38,7 @@ export class TimeDisplayComponent implements OnInit, OnDestroy {
       this.timerService.stop();
     });
     
-    this.timerService.timerStart$.pipe(
+    this.subscriptionStart$ = this.timerService.timerStart$.pipe(
       filter(start => start),
     ).subscribe(() => this.endSetTime());
 
