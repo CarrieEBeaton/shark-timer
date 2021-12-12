@@ -2,9 +2,9 @@
 
 1) Upgrade to latest version of Angular
 2) Add service to handle changing state
-3) Add state management layer to create a uni-directional flow for state
+3) Add state management layer to create a unidirectional flow for state
 4) Cleaned up application to improve maintainability
-5) Added unit tests in different areas to demonstarte understanding.
+5) Added unit tests in different areas to demonstarte understanding
 
 # SharkTimer
 
