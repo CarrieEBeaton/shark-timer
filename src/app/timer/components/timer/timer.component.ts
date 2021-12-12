@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { TimerService } from '../../service/timer.service';
-import { getInterval, getTime, TimerState } from '../../store/selectors';
+import { getTime, TimerState } from '../../store/selectors';
 import { TimeDisplayComponent } from '../time-display/time-display.component';
-import { TimerControlsComponent } from '../timer-controls/timer-controls.component';
 import * as Actions from './../../store/actions';
 import { getTimer } from './../../store/actions';
 
